@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic To-Do App</title>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="add-element-container">
+        <label for="add-element-value" id="add-element-label">Add element</label>
+        <input type="text" name="add-element-value" id="add-element-value">
+        <input type="button" id="add-element-button" value="Add">
+    </div>
+    <div id="to-do-list-container">
+        <p>To-Do List</p>
+        <div id="to-do-list-filter-container">
+            <label for="to-do-list-filter">Filter: </label>
+            <select name="to-do-list-filter" id="to-do-list-filter">
+                <option value="all">All</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+            </select>
+        </div>
+        <div id="to-do-list">
+
+        </div>
+    </div>
+</body>
+
+</html>

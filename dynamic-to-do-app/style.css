@@ -1,0 +1,7 @@
+#add-element-label {
+    display: block;
+}
+
+.task-completed {
+    background-color: aquamarine;
+}
