@@ -10,6 +10,8 @@ let toDoItems = [];
 let maxId = 0;
 const toDoListStorageName = "toDoList";
 const maxIdStorageName = "maxId";
+const animationTimer = 750;
+let previousItemCount = 0;
 
 const addToDoElement = function () {
     const toDoValueElement = document.getElementById("add-element-value");
@@ -32,6 +34,10 @@ const markToDoElement = function (id) {
 const deleteToDoElement = function (id) {
     const result = toDoItems.filter((x) => x.id !== id);
     toDoItems = result;
+};
+
+const setElementCounter = function () {
+    previousItemCount = toDoItems.length;
 };
 
 const editToDoElement = function (toDoElement, id) {
@@ -83,6 +89,8 @@ const loadItemsFromLocalStorage = function () {
     if (storedItems === null) {
         toDoItems = [];
         maxId = 0;
+        previousItemCount = 0;
+
     } else {
         toDoItems = JSON.parse(storedItems);
         for (let i = 0; i < toDoItems.length; i++) {
@@ -90,6 +98,7 @@ const loadItemsFromLocalStorage = function () {
             toDoItems[i] = new ToDoListItem(element.id, element.value, element.status);
         }
         maxId = parseInt(JSON.parse(localStorage.getItem(maxIdStorageName)));
+        setElementCounter();
     }
 };
 
@@ -131,7 +140,7 @@ const dropToDoItem = function (event, targetId) {
     }
 };
 
-const renderToDoList = function () {
+const renderToDoList = function (addAnimation = false) {
     const toDoListElement = document.getElementById("to-do-list");
     toDoListElement.innerHTML = "";
 
@@ -158,7 +167,19 @@ const renderToDoList = function () {
             }
             toDoItemCheckbox.addEventListener("click", () => markToDoElement(element.id));
             toDoItemCheckbox.addEventListener("click", saveToLocalStorage);
-            toDoItemCheckbox.addEventListener("click", renderToDoList);
+            // animation
+            toDoItemCheckbox.addEventListener("click", () => {
+                if (toDoItemCheckbox.checked) {
+                    toDoItemDiv.classList.add("task-completed");
+                    toDoItemDiv.classList.add("task-completed-fade-in");
+                    setTimeout(() => toDoItemDiv.classList.remove("task-completed-fade-in"), animationTimer);
+                }
+                else {
+                    toDoItemDiv.classList.remove("task-completed");
+                    toDoItemDiv.classList.add("task-completed-fade-out");
+                    setTimeout(() => toDoItemDiv.classList.remove("task-completed-fade-out"), animationTimer);
+                }
+            });
             toDoItemDiv.appendChild(toDoItemCheckbox);
 
             // value
@@ -182,8 +203,17 @@ const renderToDoList = function () {
             toDoItemDelete.setAttribute("value", "Delete");
             toDoItemDelete.addEventListener("click", () => deleteToDoElement(element.id));
             toDoItemDelete.addEventListener("click", saveToLocalStorage);
-            toDoItemDelete.addEventListener("click", renderToDoList);
+            // animation
+            toDoItemDelete.addEventListener("click", () => toDoItemDiv.classList.add("fade-out"));
+            toDoItemDelete.addEventListener("click", () => setTimeout(renderToDoList, animationTimer));
+            toDoItemDelete.addEventListener("click", setElementCounter);
             toDoItemDiv.appendChild(toDoItemDelete);
+
+            // add animation
+            if (addAnimation && i === toDoItems.length - 1 && toDoItems.length != previousItemCount) {
+                toDoItemDiv.classList.add("fade-in");
+                setTimeout(() => toDoItemDiv.classList.remove("fade-in"), animationTimer);
+            }
 
             toDoListElement.appendChild(toDoItemDiv);
         }
@@ -197,7 +227,8 @@ const startup = function () {
     const addButton = document.getElementById("add-element-button");
     addButton.addEventListener("click", addToDoElement);
     addButton.addEventListener("click", saveToLocalStorage);
-    addButton.addEventListener("click", renderToDoList);
+    addButton.addEventListener("click", () => renderToDoList(true));
+    addButton.addEventListener("click", setElementCounter);
 
     const filterElement = document.getElementById("to-do-list-filter");
     filterElement.addEventListener("change", renderToDoList);
