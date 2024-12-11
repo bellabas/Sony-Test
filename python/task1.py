@@ -2,7 +2,7 @@ from random import randint
 
 
 def generate_grid(n: int, m: int) -> list[list[int]]:
-    if n < 0 or n > 100 or m < 0 or m > 100:
+    if n < 1 or n > 100 or m < 1 or m > 100:
         raise ValueError("Grid size must be between 1 and 100")
 
     grid: list[list[int]] = [[randint(0, 1) for _ in range(m)] for _ in range(n)]
@@ -37,7 +37,7 @@ def find_paths(grid: list[list[int]]) -> int:
     return dp[n-1][m-1]
 
 
-if __name__ == "__main__":
+def main():
     num_paths = 0
     while num_paths == 0:
         grid = generate_grid(10, 10)
@@ -48,3 +48,7 @@ if __name__ == "__main__":
         num_paths = find_paths(grid)
         print(f"Number of paths found: {num_paths}")
         print("\n")
+
+
+if __name__ == "__main__":
+    main()
